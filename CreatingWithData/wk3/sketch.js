@@ -8,7 +8,11 @@ var astroData;
 
 var spin = 1;
 
+var wordData;
 
+var para;
+
+var gotWord;
 
 function preload() {
 	mapImg = loadImage('https://api.mapbox.com/styles/v1/mapbox/dark-v9/static/0,0,1,0,0/1024x512?access_token=pk.eyJ1Ijoic29maWFmZXJyYXJvMTk5NiIsImEiOiJjamZiMzQ1bmkzbXJ2MnpvNG1nd3Z2ZWl2In0._hdJnbjf7jxau1PkMoK7Cw');
@@ -16,6 +20,8 @@ function preload() {
 	cityData = loadTable('city_vals.csv','header');
 
 	loadJSON("http://api.open-notify.org/astros", gotAstroData);
+
+	loadJSON("E_W.json", gotWordData);
 }
 
 function setup () {
@@ -26,6 +32,9 @@ function setup () {
 	// fill(255, 0, 255, 200);
 	strokeWeight(0.5);
 	stroke(255,0,255);
+
+	para = createP("This piece of work is ", gotWord);
+	console.log(para);
 
 }
 
@@ -51,7 +60,6 @@ function draw() {
 
 		fill(255, 0, 255, 200);
 		ellipse (cityX, cityY, cityPop, cityPop,);
-
 	}
 
 	var ISSx = mercX(iss_position.longitude) - cx;
@@ -60,25 +68,32 @@ function draw() {
 	fill(0, 0, 255, 200);
 	ellipse(ISSx, ISSy, 10, 10);
 
-	// console.log(ISSx,ISSy);
-	// console.log(cityX);
-	// console.log(cityPop);
-
 	push();
-	translate(ISSx, ISSy);
-	angleMode(DEGREES);
-	spin++;
-	rotate(spin);
-	for (let i=0; i<astroData.length; i++){
-				// console.log("hello", astroData[i].name);
-				fill(255);
-				textSize(10);
+		translate(ISSx, ISSy);
+		angleMode(DEGREES);
+		spin++;
+		rotate(spin);
+		for (let i=0; i<astroData.length; i++){
+					// console.log("hello", astroData[i].name);
+					fill(255);
+					textSize(10);
 
-				angleMode(RADIANS);
-				rotate(90);
-				text(astroData[i].name, 0, 0);
-	}
+					angleMode(RADIANS);
+					rotate(90);
+					text(astroData[i].name, 0, 0);
+		}
 	pop();
+
+
+
+	document.addEventListener("keydown", onDocumentKeyDown, false);
+
+	function onDocumentKeyDown(event) {
+	  var keyCode = event.keyCode;
+		if (keyCode == 38){
+			gotWord = wordData;
+		}
+}
 
 }
 
@@ -90,6 +105,17 @@ function gotAstroData(data){
 	astroData = data.people;
 	console.log("astros!!", astroData);
 }
+
+
+
+function gotWordData(data){
+		function getRandomInt(max) {
+		  return Math.floor(Math.random() * Math.floor(max));
+		}
+		wordData = data.encouraging_words[(getRandomInt(48))];
+		console.log("HERE IS WORDS", wordData);
+	}
+
 
 function mercX(lon) {
 		lon = radians(lon);
