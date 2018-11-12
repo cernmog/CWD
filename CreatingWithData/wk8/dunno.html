@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <script type="text/javascript" src="//pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+    <link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+</head>
+  <body>
+    <center><h3>LINE GRAPH</h3></center>
+    <div id="chart1"></div>
+    <script>
+
+    var pubnub = new PubNub({
+        subscribeKey: 'sub-c-5f1b7c8e-fbee-11e3-aa40-02ee2ddab7fe'
+    });
+
+    pubnub.subscribe({
+        channels : ['pubnub-sensor-network']
+    });
+
+    pubnub.addListener({
+    message: function(m){
+        // console.log(m.message);
+        // console.log("radiation_level " +m.message.radiation_level);
+        // console.log("humidity " +m.message.humidity);
+        // console.log("temp " +m.message.ambient_temperature);
+        // console.log("light-level " +m.message.photosensor);
+    },
+    error: function(e){
+        // console.log(e);
+    }
+    });
+
+
+
+    eon.chart({
+    pubnub: pubnub,
+    channels: ['pubnub-sensor-network'],
+    generate: {
+    bindto: '#chart1',
+    },
+    transform: function(m) {
+    return { eon: {
+        temp: m.ambient_temperature,
+        radiation: m.radiation_level,
+        humidity: m.humidity,
+        lightlevel: m.photosensor
+    }}
+    }
+});
+
+</script>
+<center><h3>BAR CHART</h3></center>
+<div id="chart2"></div>
+<script>
+
+var pastTemp = []
+
+var allTemp = []
+
+var minTemp;
+var maxTemp;
+
+eon.chart({
+    pubnub: pubnub,
+    channels: ['pubnub-sensor-network'],
+    generate: {
+        bindto: '#chart2',
+        data: {
+        labels: false,
+        type: 'bar'
+        },
+        bar: {
+        width: {
+            ratio: 0.5
+        }
+        },
+        tooltip: {
+            show: false
+        },
+        axis: {
+            y: {
+                max: 50
+            }
+        }
+},
+transform: function(m) {
+
+pastTemp.push(parseInt(m.ambient_temperature));
+if (pastTemp.length >  20){
+  pastTemp.shift();
+}
+
+allTemp.push(parseInt(m.ambient_temperature));
+pastTemp.sort(function(a, b){return a - b});
+
+var sum = 0;
+for (var i = 0; i < pastTemp.length; i ++){
+    sum = sum + pastTemp[i];
+}
+var avgTemp = sum/pastTemp.length
+
+var minTemp = Math.min(allTemp);
+var maxTemp = Math.max(allTemp);
+
+// console.log(pastTemp);
+
+return { eon: {
+    Temp: m.ambient_temperature,
+    AvgTemp: avgTemp,
+    MinTemp: minTemp,
+    MaxTemp: maxTemp,
+    }}
+}
+});
+
+</script>
+
+    </script>
+  </body>
+</html>
