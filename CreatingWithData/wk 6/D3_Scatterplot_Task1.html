@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Scatterplot</title>
+        <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+        <style type="text/css">
+            /* No style rules here yet */
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+
+
+        // global variables
+    var irisData = [];
+    var index = 0;
+
+    var w = 500;
+    var h = 300;
+    var padding = 30;
+
+    var flowers=[];
+
+    var dataset = [
+                    [5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+                    [410, 12], [475, 44], [25, 67], [85, 21], [220, 88],
+                    [600, 150],
+                    ];
+
+
+
+    // load data
+    d3.csv("fisher_iris.csv", function(data) {
+        irisData[index] = data;
+    	index++;
+
+    	if (index == 150){
+
+
+            for (i=0; i<irisData.length; i++){
+              flowers.push([[irisData[i].petalLength],[irisData[i].petalWidth],[irisData[i].sepalLength],[irisData[i].sepalWidth]]);
+
+            }
+
+            dataset = flowers;
+
+            console.log(flowers);
+
+            drawPlot();
+        }
+    });
+
+
+
+    function drawPlot(){
+    	// put the rest of the code here e.g.
+
+
+    	 //Create scale functions
+    var xScale = d3.scaleLinear()
+                                .domain([0, d3.max(dataset, function(d) { return d[0]; })])
+                                .range([padding, w - padding * 2]);
+
+
+    var yScale = d3.scaleLinear()
+                            .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+                            .range([h - padding, padding]);
+
+    var rxScale = d3.scaleLinear()
+                            .domain([0, d3.max(dataset, function(d) { return d[2]; })])
+                            .range([0,6]);
+
+    var ryScale = d3.scaleLinear()
+                             .domain([0, d3.max(dataset, function(d) { return d[3]; })])
+                             .range([0,6]);
+
+    //Define X axis
+    var xAxis = d3.axisBottom()
+                        .scale(xScale)
+                        .ticks(5);
+
+    //Define Y axis
+    var yAxis = d3.axisLeft()
+                        .scale(yScale)
+                        .ticks(5);
+
+    //Create SVG element
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+
+    //Create circles
+    svg.selectAll("circle")
+        .data(dataset)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) {
+            return xScale(d[0]);
+        })
+        .attr("cy", function(d) {
+            return yScale(d[1]);
+        })
+        .attr("r", 2)
+        .style("fill", 'red');
+
+
+//Create ELLIPSE
+    svg.selectAll("ellipse")
+         .data(dataset)
+         .enter()
+         .append("ellipse")
+         .attr("rx", function(d) {
+		return rxScale(d[2]);})
+         .attr("ry", function(d) {
+		return ryScale(d[3]);
+  })
+    .attr("r", 2)
+    .style("fill", 'blue');
+
+
+    //Create X axis
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (h - padding) + ")")
+        .call(xAxis);
+
+    //Create Y axis
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis);
+
+      }
+
+
+        </script>
+    </body>
+</html>

@@ -98,8 +98,10 @@ for (var i = 0; i < pastTemp.length; i ++){
 }
 var avgTemp = sum/pastTemp.length
 
-var minTemp = Math.min(allTemp);
-var maxTemp = Math.max(allTemp);
+var last = allTemp.length;
+
+var minTemp = allTemp[0];
+var maxTemp = allTemp[last];
 
 // console.log(pastTemp);
 
