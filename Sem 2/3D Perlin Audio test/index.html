@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+    <html>
+
+      <head>
+    		<title>Perlin Audio Bois</title>
+
+        <link rel="stylesheet" href="main.css" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    	</head>
+
+    	<body>
+            <script  src="main.css"></script>
+            <script  src="three.min.js"></script>
+            <script src="perlin.js"></script>
+            <script src="perlinTest.js"></script>
+
+            <!-- <audio src="Aphex Twin - 54 Cymru Beats.mp3" type="audio/mpeg"></audio> -->
+
+            <audio src="Kalimba.mp3" type="audio/mpeg"></audio>
+            Scale of Noise
+            <div class="noiseContain">
+
+                <input type="range" min="0" max="25" value="0" step="0.005" class="slider" id="noise_scale">
+            </div>
+            Blobbyness
+            <div class="blobContain">
+
+                <input type="range" min="0" max="0.3" value="0.1" step="0.005" class="slider" id="blob_scale">
+            </div>
+
+            <button id="play_pause_button" type="button">Play / Pause</button>
+
+            <!-- <div class="sizeContain">
+                <input type="range" min="10" max="20" value="15" class="slider" id="size_scale">
+            </div>  -->
+
+    	</body>
+    </html>
